@@ -20,7 +20,7 @@ public class Proyecto {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Integer id;
 
 	@Column(nullable = false, length = 100)
 	private String nombre;
@@ -39,20 +39,20 @@ public class Proyecto {
 		super();
 	}
 
-	public Proyecto(int id, String nombre, String descripcion, LocalDate fechaInicio) {
-		super();
-		this.id = id;
-		this.nombre = nombre;
-		this.descripcion = descripcion;
-		this.fechaInicio = fechaInicio;
+	public Proyecto(Integer id, String nombre, String descripcion, LocalDate fechaInicio) {
+	    super();
+	    this.id = id;
+	    this.nombre = nombre;
+	    this.descripcion = descripcion;
+	    this.fechaInicio = fechaInicio;
 	}
 
-	public int getId() {
-		return id;
+	public Integer getId() {
+	    return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setId(Integer id) {
+	    this.id = id;
 	}
 
 	public String getNombre() {

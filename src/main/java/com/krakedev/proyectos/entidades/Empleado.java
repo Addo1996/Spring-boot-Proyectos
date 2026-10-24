@@ -19,7 +19,7 @@ public class Empleado {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Integer id;
 
 	@Column(nullable = false, length = 100)
 	private String nombre;
@@ -35,18 +35,18 @@ public class Empleado {
 		super();
 	}
 
-	public Empleado(int id, String nombre, String cargo) {
+	public Empleado(Integer id, String nombre, String cargo) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.cargo = cargo;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
