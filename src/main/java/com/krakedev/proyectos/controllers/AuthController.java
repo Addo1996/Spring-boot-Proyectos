@@ -8,10 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.krakedev.proyectos.entidades.Usuario;
+import com.krakedev.proyectos.security.JwtUtil;
+import com.krakedev.proyectos.services.TokenBlacklistService;
 import com.krakedev.proyectos.services.UsuarioService;
 
 @RestController
@@ -19,9 +22,13 @@ import com.krakedev.proyectos.services.UsuarioService;
 public class AuthController {
 
     private final UsuarioService usuarioService;
+    private final TokenBlacklistService blacklistService;
 
-    public AuthController(UsuarioService usuarioService) {
+    public AuthController(
+            UsuarioService usuarioService,
+            TokenBlacklistService blacklistService) {
         this.usuarioService = usuarioService;
+        this.blacklistService = blacklistService;
     }
 
     @PostMapping("/registrar")
@@ -43,11 +50,37 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
         }
 
+        String token = JwtUtil.generarToken(
+                usuario.getUsername(),
+                usuario.getRol()
+        );
+
         Map<String, String> respuesta = new HashMap<>();
         respuesta.put("mensaje", "Autenticación correcta");
         respuesta.put("username", usuario.getUsername());
         respuesta.put("rol", usuario.getRol());
+        respuesta.put("token", token);
 
+        return ResponseEntity.ok(respuesta);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, String>> logout(
+            @RequestHeader(value = "Authorization", required = false)
+            String authHeader) {
+
+        Map<String, String> respuesta = new HashMap<>();
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")
+                || authHeader.length() <= 7) {
+            respuesta.put("mensaje", "Token no proporcionado");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
+        }
+
+        String token = authHeader.substring(7);
+        blacklistService.invalidarToken(token);
+
+        respuesta.put("mensaje", "Sesión cerrada correctamente");
         return ResponseEntity.ok(respuesta);
     }
 }
