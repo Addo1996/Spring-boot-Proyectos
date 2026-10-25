@@ -1,4 +1,5 @@
 
+
 package com.krakedev.proyectos.security;
 
 import java.util.Date;
@@ -10,22 +11,25 @@ import com.auth0.jwt.interfaces.JWTVerifier;
 
 public class JwtUtil {
 
-    private static final String SECRET = "MiClave123";
-    private static final long EXPIRACION = 1000 * 60 * 60;
+    private static final String CLAVE_SECRETA = "MiClave123";
+    private static final long TIEMPO_EXPIRACION = 1000 * 60 * 60;
 
-    private static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET);
+    private static final Algorithm ALGORITMO =
+            Algorithm.HMAC256(CLAVE_SECRETA);
 
-    public static String generarToken(String username, String rol) {
+    public static String generarToken(String nombreUsuario, String rol) {
         return JWT.create()
-                .withSubject(username)
+                .withSubject(nombreUsuario)
                 .withClaim("rol", rol)
                 .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRACION))
-                .sign(ALGORITHM);
+                .withExpiresAt(
+                        new Date(System.currentTimeMillis() + TIEMPO_EXPIRACION))
+                .sign(ALGORITMO);
     }
 
     public static DecodedJWT verificarToken(String token) {
-        JWTVerifier verifier = JWT.require(ALGORITHM).build();
-        return verifier.verify(token);
+        JWTVerifier verificador = JWT.require(ALGORITMO).build();
+        return verificador.verify(token);
     }
 }
+
