@@ -30,6 +30,10 @@ public class Empleado {
 	@ManyToMany(mappedBy = "empleados")
 	@JsonIgnore
 	private List<Tarea> tareas;
+	
+	
+	@Column(nullable = true, length = 50)
+	private String departamento ;
 
 	public Empleado() {
 		super();
@@ -40,6 +44,15 @@ public class Empleado {
 		this.id = id;
 		this.nombre = nombre;
 		this.cargo = cargo;
+	}
+
+	public Empleado(Integer id, String nombre, String cargo, List<Tarea> tareas, String departamento) {
+		super();
+		this.id = id;
+		this.nombre = nombre;
+		this.cargo = cargo;
+		this.tareas = tareas;
+		this.departamento = departamento;
 	}
 
 	public Integer getId() {
@@ -73,4 +86,14 @@ public class Empleado {
 	public void setTareas(List<Tarea> tareas) {
 		this.tareas = tareas;
 	}
+
+	public String getDepartamento() {
+		return departamento;
+	}
+
+	public void setDepartamento(String departamento) {
+		this.departamento = departamento;
+	}
+	
+	
 }

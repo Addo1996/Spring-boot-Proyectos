@@ -35,6 +35,9 @@ public class Tarea {
 	@ManyToOne
 	@JoinColumn(name = "proyecto_id", nullable = false)
 	private Proyecto proyecto;
+	
+	@Column(nullable = true, length = 30)
+	private String estado;
 
 	@ManyToMany
 	@JoinTable(
@@ -56,6 +59,20 @@ public class Tarea {
 		this.fechaLimite = fechaLimite;
 		this.costoEstimado = costoEstimado;
 		this.proyecto = proyecto;
+	}
+	
+	
+
+	public Tarea(Integer id, String descripcion, LocalDate fechaLimite, double costoEstimado, Proyecto proyecto,
+			String estado, List<Empleado> empleados) {
+		super();
+		this.id = id;
+		this.descripcion = descripcion;
+		this.fechaLimite = fechaLimite;
+		this.costoEstimado = costoEstimado;
+		this.proyecto = proyecto;
+		this.estado = estado;
+		this.empleados = empleados;
 	}
 
 	public Integer getId() {
@@ -105,4 +122,14 @@ public class Tarea {
 	public void setEmpleados(List<Empleado> empleados) {
 		this.empleados = empleados;
 	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+	
+	
 }

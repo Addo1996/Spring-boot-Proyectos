@@ -61,4 +61,12 @@ public class TareaService {
 		Optional<Tarea> resultado = repository.findById(id);
 		return resultado.orElse(null);
 	}
+	
+	public Optional<Tarea> buscarTareaPorId(int id) {
+		return Optional.ofNullable(repository.findById(id).orElse(null));
+	}
+	
+	public void eliminarTarea(int id) {
+		repository.deleteById(id);
+	}
 }

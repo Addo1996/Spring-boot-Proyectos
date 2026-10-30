@@ -11,7 +11,7 @@ import com.auth0.jwt.interfaces.JWTVerifier;
 
 public class JwtUtil {
 
-    private static final String CLAVE_SECRETA = "MiClave123";
+    private static final String CLAVE_SECRETA = "MiCl@ve123_EstaVa_A_SerUna_Clavelarga";
     private static final long TIEMPO_EXPIRACION = 1000 * 60 * 60;
 
     private static final Algorithm ALGORITMO =
