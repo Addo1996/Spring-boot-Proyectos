@@ -2,6 +2,7 @@
 package com.krakedev.proyectos.controllers;
 
 import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ import com.krakedev.proyectos.entidades.Tarea;
 import com.krakedev.proyectos.services.TareaService;
 
 @RestController
-@RequestMapping("/tareas")
+@RequestMapping("/api/tareas")
 public class TareaController {
 
 	private final TareaService tareaService;
@@ -52,6 +53,7 @@ public class TareaController {
 		}
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	@GetMapping("/{id}")
 	public ResponseEntity<?> buscar(@PathVariable int id) {
 		try {
@@ -67,6 +69,7 @@ public class TareaController {
 		}
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> eliminar(@PathVariable int id) {
 		try {

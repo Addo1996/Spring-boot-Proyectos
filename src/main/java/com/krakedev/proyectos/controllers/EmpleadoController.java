@@ -20,91 +20,100 @@ import com.krakedev.proyectos.entidades.Empleado;
 import com.krakedev.proyectos.services.EmpleadoService;
 
 @RestController
-@RequestMapping("/empleados")
+@RequestMapping("/api/empleados")
 public class EmpleadoController {
 
-	private final EmpleadoService empleadoService;
+    private final EmpleadoService empleadoService;
 
-	public EmpleadoController(EmpleadoService empleadoService) {
-		super();
-		this.empleadoService = empleadoService;
-	}
+    public EmpleadoController(EmpleadoService empleadoService) {
+        super();
+        this.empleadoService = empleadoService;
+    }
 
-	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-	@GetMapping
-	public ResponseEntity<?> listar() {
-		try {
-			List<Empleado> empleados = empleadoService.listarEmpleados();
-			return ResponseEntity.ok(empleados);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(e.getMessage());
-		}
-	}
+    // Listar empleados: ADMIN y USER
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping
+    public ResponseEntity<?> listar() {
+        try {
+            List<Empleado> empleados = empleadoService.listarEmpleados();
+            return ResponseEntity.ok(empleados);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+    }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<?> buscar(@PathVariable int id) {
-		try {
-			Optional<Empleado> resultado = empleadoService.buscarEmpleadoPorId(id);
+    // Buscar empleado: ADMIN y USER
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/{id}")
+    public ResponseEntity<?> buscar(@PathVariable int id) {
+        try {
+            Optional<Empleado> resultado = empleadoService.buscarEmpleadoPorId(id);
 
-			if (resultado.isEmpty()) {
-				return ResponseEntity.notFound().build();
-			}
+            if (resultado.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
 
-			return ResponseEntity.ok(resultado.get());
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(e.getMessage());
-		}
-	}
+            return ResponseEntity.ok(resultado.get());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+    }
 
-	@PostMapping
-	public ResponseEntity<?> guardar(@RequestBody Empleado empleado) {
-		try {
-			Empleado guardado = empleadoService.guardarEmpleado(empleado);
-			return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(e.getMessage());
-		}
-	}
+    // Guardar empleado: solamente ADMIN
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping
+    public ResponseEntity<?> guardar(@RequestBody Empleado empleado) {
+        try {
+            Empleado guardado = empleadoService.guardarEmpleado(empleado);
+            return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+    }
 
-	@PutMapping("/{id}")
-	public ResponseEntity<?> actualizar(@PathVariable int id,
-			@RequestBody Empleado datos) {
-		try {
-			Optional<Empleado> resultado = empleadoService.buscarEmpleadoPorId(id);
+    // Actualizar empleado: solamente ADMIN
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizar(@PathVariable int id,
+            @RequestBody Empleado datos) {
+        try {
+            Optional<Empleado> resultado = empleadoService.buscarEmpleadoPorId(id);
 
-			if (resultado.isEmpty()) {
-				return ResponseEntity.notFound().build();
-			}
+            if (resultado.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
 
-			Empleado empleado = resultado.get();
-			empleado.setNombre(datos.getNombre());
-			empleado.setCargo(datos.getCargo());
+            Empleado empleado = resultado.get();
+            empleado.setNombre(datos.getNombre());
+            empleado.setCargo(datos.getCargo());
 
-			Empleado actualizado = empleadoService.actualizarEmpleado(empleado);
-			return ResponseEntity.ok(actualizado);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(e.getMessage());
-		}
-	}
+            Empleado actualizado = empleadoService.actualizarEmpleado(empleado);
+            return ResponseEntity.ok(actualizado);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+    }
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<?> eliminar(@PathVariable int id) {
-		try {
-			Optional<Empleado> resultado = empleadoService.buscarEmpleadoPorId(id);
+    // Eliminar empleado: solamente ADMIN
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminar(@PathVariable int id) {
+        try {
+            Optional<Empleado> resultado = empleadoService.buscarEmpleadoPorId(id);
 
-			if (resultado.isEmpty()) {
-				return ResponseEntity.notFound().build();
-			}
+            if (resultado.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
 
-			empleadoService.eliminarEmpleado(id);
-			return ResponseEntity.noContent().build();
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(e.getMessage());
-		}
-	}
+            empleadoService.eliminarEmpleado(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+    }
 }

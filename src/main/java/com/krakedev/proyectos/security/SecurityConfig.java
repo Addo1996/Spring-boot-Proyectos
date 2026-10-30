@@ -35,7 +35,7 @@ public class SecurityConfig {
 
             // Definir las rutas públicas y protegidas
             .authorizeHttpRequests(autorizacion -> autorizacion
-                .requestMatchers("/auth/registrar", "/auth/login").permitAll()
+                .requestMatchers("/api/auth/registrar", "/api/auth/login").permitAll()
                 .anyRequest().authenticated()
             )
 

@@ -10,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.krakedev.proyectos.services.TokenBlacklistService;
 
@@ -56,6 +55,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // Verificar el token y obtener los datos del usuario
                 DecodedJWT tokenDecodificado = JwtUtil.verificarToken(token);
 
+                // Comprobar que el token sea válido
+                if (tokenDecodificado == null) {
+                    respuesta.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    respuesta.setContentType("application/json");
+                    respuesta.getWriter().write(
+                            "{\"mensaje\":\"Token inválido o expirado\"}");
+                    return;
+                }
+
                 String nombreUsuario = tokenDecodificado.getSubject();
                 String rolUsuario = tokenDecodificado.getClaim("rol").asString();
 
@@ -70,11 +78,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext()
                         .setAuthentication(autenticacion);
 
-            } catch (JWTVerificationException e) {
+            } catch (Exception e) {
                 respuesta.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 respuesta.setContentType("application/json");
                 respuesta.getWriter().write(
-                        "{\"mensaje\":\"Token inválido o expirado\"}");
+                        "{\"mensaje\":\"Error al validar el token\"}");
                 return;
             }
         }

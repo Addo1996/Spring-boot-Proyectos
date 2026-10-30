@@ -21,7 +21,7 @@ import com.krakedev.proyectos.entidades.Proyecto;
 import com.krakedev.proyectos.services.ProyectoService;
 
 @RestController
-@RequestMapping("/proyectos")
+@RequestMapping("/api/proyectos")
 public class ProyectoController {
 
 	private final ProyectoService proyectoService;
@@ -42,6 +42,7 @@ public class ProyectoController {
 		}
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	@GetMapping("/{id}")
 	public ResponseEntity<?> buscar(@PathVariable int id) {
 		try {
@@ -68,6 +69,7 @@ public class ProyectoController {
 		}
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@PutMapping("/{id}")
 	public ResponseEntity<?> actualizar(@PathVariable int id, @RequestBody Proyecto datos) {
 		try {

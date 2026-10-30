@@ -19,6 +19,10 @@ public class UsuarioService {
     }
 
     public Usuario registrar(Usuario usuario) {
+
+        // Asignar siempre el rol USER al registrarse
+        usuario.setRol("USER");
+
         String claveCifrada = BCrypt.hashpw(
                 usuario.getPassword(),
                 BCrypt.gensalt(10)
